@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list_provider_project/app/core/ui/theme_extensions.dart';
+import 'package:todo_list_provider_project/app/core/widgets/todo_list_field.dart';
 import 'package:todo_list_provider_project/app/core/widgets/todo_list_logo.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -48,7 +49,26 @@ class RegisterPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20.0),
             child: Form(
                 child: Column(
-              children: [],
+              children: [
+                TodoListField(label: 'E-mail'),
+                const SizedBox(height: 20),
+                TodoListField(label: "Senha", obscureText: true),
+                const SizedBox(height: 20),
+                TodoListField(label: "Confirma senha", obscureText: true),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: const Text("Salvar"),
+                  ),
+                )
+              ],
             )),
           )
         ],

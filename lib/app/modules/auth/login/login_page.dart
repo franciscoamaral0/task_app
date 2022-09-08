@@ -33,9 +33,6 @@ class LoginPage extends StatelessWidget {
                           children: [
                             TodoListField(
                               label: "E-mail",
-                              sufixIconButton: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.abc_outlined)),
                             ),
                             const SizedBox(height: 20),
                             TodoListField(
