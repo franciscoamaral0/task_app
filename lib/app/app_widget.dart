@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:todo_list_provider_project/app/core/database/sql_adm_connection.dart';
 import 'package:todo_list_provider_project/app/core/ui/todo_list_ui_config.dart';
 import 'package:todo_list_provider_project/app/modules/auth/auth_module.dart';
@@ -18,6 +18,7 @@ class _AppWidgetState extends State<AppWidget> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addObserver(sqlAdmConnection);
   }
 

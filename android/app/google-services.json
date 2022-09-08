@@ -29,6 +29,13 @@
             {
               "client_id": "64899455216-hr0defi6d3ln8eipu0mr6kt8hoteqhf2.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "64899455216-ic2d5lkafji0d4jh0ma1s34c9lfsr6bu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.todoListProviderProject"
+              }
             }
           ]
         }
