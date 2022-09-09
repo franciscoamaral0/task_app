@@ -40,6 +40,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   firebase_auth: ^3.7.0
   firebase_core: ^1.21.1
+  validatorless: ^1.2.1
  
 
 dev_dependencies:
