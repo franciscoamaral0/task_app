@@ -1,12 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list_provider_project/app/core/notifier/default_listener_notifier.dart';
 import 'package:todo_list_provider_project/app/core/widgets/todo_list_field.dart';
 import 'package:todo_list_provider_project/app/core/widgets/todo_list_logo.dart';
+import 'package:todo_list_provider_project/app/modules/auth/login/login_controller.dart';
 import 'package:todo_list_provider_project/app/modules/splash/splash_page.dart';
+import 'package:validatorless/validatorless.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _emailEC = TextEditingController();
+  final _senhaEC = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    DefaultListenerNotifier(changeNotifier: context.read<LoginController>())
+        .listener(
+      context: context,
+      sucessCallback: (notifier, listenerInstance) {
+        print("login efetuado com sucesso");
+      },
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +53,28 @@ class LoginPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 40.0, vertical: 20),
                       child: Form(
+                        key: _formKey,
                         child: Column(
                           children: [
                             TodoListField(
+                              controller: _emailEC,
                               label: "E-mail",
+                              validator: Validatorless.multiple([
+                                Validatorless.required(
+                                    "Por favor, informe um e-mail válida")
+                              ]),
                             ),
                             const SizedBox(height: 20),
                             TodoListField(
+                              controller: _senhaEC,
                               label: "Senha",
                               obscureText: true,
+                              validator: Validatorless.multiple([
+                                Validatorless.required(
+                                    "Por favor, informe uma senha válida"),
+                                Validatorless.min(
+                                    6, "Senha com no mínimo 6 caracteres")
+                              ]),
                             ),
                             const SizedBox(height: 10),
                             Row(
@@ -48,7 +85,19 @@ class LoginPage extends StatelessWidget {
                                   child: const Text("Esqueceu sua senha?"),
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    final formValidade =
+                                        _formKey.currentState?.validate() ??
+                                            false;
+
+                                    if (formValidade) {
+                                      final login = _emailEC.text;
+                                      final password = _senhaEC.text;
+                                      context
+                                          .read<LoginController>()
+                                          .login(login, password);
+                                    }
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
