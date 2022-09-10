@@ -3,6 +3,7 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_provider_project/app/core/notifier/default_listener_notifier.dart';
+import 'package:todo_list_provider_project/app/core/ui/messages.dart';
 import 'package:todo_list_provider_project/app/core/widgets/todo_list_field.dart';
 import 'package:todo_list_provider_project/app/core/widgets/todo_list_logo.dart';
 import 'package:todo_list_provider_project/app/modules/auth/login/login_controller.dart';
@@ -20,6 +21,8 @@ class _LoginPageState extends State<LoginPage> {
   final _emailEC = TextEditingController();
   final _senhaEC = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _emailFocus = FocusNode();
+
   @override
   void initState() {
     DefaultListenerNotifier(changeNotifier: context.read<LoginController>())
@@ -27,6 +30,13 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       sucessCallback: (notifier, listenerInstance) {
         print("login efetuado com sucesso");
+      },
+      everCallback: (notifier, listenerInstance) {
+        if (notifier is LoginController) {
+          if (notifier.hasInfo) {
+            Messages.of(context).showInfo(notifier.infoMessage!);
+          }
+        }
       },
     );
     super.initState();
@@ -58,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             TodoListField(
                               controller: _emailEC,
+                              focusNode: _emailFocus,
                               label: "E-mail",
                               validator: Validatorless.multiple([
                                 Validatorless.required(
@@ -81,7 +92,17 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    if (_emailEC.text.isNotEmpty) {
+                                      context
+                                          .read<LoginController>()
+                                          .fogotPassword(_emailEC.text);
+                                    } else {
+                                      _emailFocus.requestFocus();
+                                      Messages.of(context)
+                                          .showError("Digite um e-mail válido");
+                                    }
+                                  },
                                   child: const Text("Esqueceu sua senha?"),
                                 ),
                                 ElevatedButton(
