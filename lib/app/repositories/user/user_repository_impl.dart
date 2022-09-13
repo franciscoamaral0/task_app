@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todo_list_provider_project/app/exception/auth_exception.dart';
 
 import './user_repository.dart';
@@ -78,5 +79,51 @@ class UserRepositoryImpl implements UserRepository {
       print(s);
       throw AuthException(message: "Erro ao resetar senha");
     }
+  }
+
+  @override
+  Future<User?> googleLogin() async {
+    List<String>? loginMethods;
+    try {
+      final googleSignin = GoogleSignIn();
+      final googleUser = await googleSignin.signIn();
+
+      if (googleUser != null) {
+        loginMethods =
+            await _firebaseAuth.fetchSignInMethodsForEmail(googleUser.email);
+
+        if (loginMethods.contains('password')) {
+          throw AuthException(
+              message:
+                  "Você ja cadastrou email no aplicativo, caso tenha esquecido sua senha, clicar no link esqueci a senha");
+        } else {
+          final googleAuth = await googleUser.authentication;
+          final firebaseCredential = GoogleAuthProvider.credential(
+              accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+
+          final userCredential =
+              await _firebaseAuth.signInWithCredential(firebaseCredential);
+
+          return userCredential.user;
+        }
+      }
+    } on FirebaseAuthException catch (e, s) {
+      print(e);
+      print(s);
+      if (e.code == "account-exist-with-different-credential") {
+        throw AuthException(message: '''
+          Login invalido, você se registrou no App com os seguintes provedores:
+          ${loginMethods?.join(',')}
+          ''');
+      } else {
+        throw AuthException(message: "Erro ao realizer login");
+      }
+    }
+  }
+
+  @override
+  Future<void> googleLogout() async {
+    await GoogleSignIn().signOut();
+    _firebaseAuth.signOut();
   }
 }

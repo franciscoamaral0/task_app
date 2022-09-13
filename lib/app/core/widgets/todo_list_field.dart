@@ -44,7 +44,7 @@ class TodoListField extends StatelessWidget {
               borderSide: const BorderSide(color: Colors.red),
             ),
             isDense: true,
-            suffixIcon: this.sufixIconButton ??
+            suffixIcon: sufixIconButton ??
                 (obscureText == true
                     ? IconButton(
                         onPressed: () {
